@@ -14,7 +14,7 @@ import LiangRuizhe.rpc.cousumer.param.Response;
 
 
 
-public class ResultFuture {
+public class ResultFuture {//用于存储和管理请求的结果并支持等待结果的获取
 	public final static ConcurrentHashMap<Long,ResultFuture> map = new ConcurrentHashMap<Long,ResultFuture>();
 	final  Lock lock = new ReentrantLock();//更改
 	private Condition condition = lock.newCondition();
