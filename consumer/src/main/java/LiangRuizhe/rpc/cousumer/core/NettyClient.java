@@ -30,19 +30,18 @@ import io.netty.handler.codec.string.StringEncoder;
 public class NettyClient {
 //	public static Set<String> realServerPath = new HashSet<String>();//去重and去序列号
 	public static final Bootstrap b = new Bootstrap();
-
-
+//定义了一个静态的Bootstrap实例b,Bootstrap是Netty用于配置客户端的类，用于设置Netty的各种配置并启动客户端。
 	private static ChannelFuture f = null;
-	
+//定义了一个静态变量f，表示客户端连接的ChannelFuture对象，用来跟踪和处理链接的生命周期。
 	static{
 		String host = "localhost";
 		int port = 8080;
 		
-		EventLoopGroup work = new NioEventLoopGroup();
+		EventLoopGroup work = new NioEventLoopGroup();//EventLoopGroup，管理Netty事件循环线程池，基于Java NIO提供非阻塞的IO操作。
 		try {
-		b.group(work)
-			.channel(NioSocketChannel.class)
-			.option(ChannelOption.SO_KEEPALIVE, true)
+		b.group(work) //将work设置为处理I/O事件的线程池
+			.channel(NioSocketChannel.class) //使用NioSocketChannel作为客户端的连接类型，是Netty用于TCP/IP连接的类
+			.option(ChannelOption.SO_KEEPALIVE, true) 
 			.handler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
@@ -55,12 +54,12 @@ public class NettyClient {
 			});
 				
 				CuratorFramework client = ZooKeeperFactory.getClient();
-			
+			//通过ZooKeeperFactory.getClient()方法获取一个ZooKeeper客户端实例。这个客户端用于与ZooKeeper进行通信，以获取服务端的地址和监听服务端的变化
 				List<String> serverPath = client.getChildren().forPath(Constans.SERVER_PATH);
-				//客户端加上ZK监听服务器的变化
+				//客户端加上ZK监听服务器的变化,通过ZooKeeper客户端获取SERVER_PATH路径下的所有子节点（即所有注册的服务器地址）
 				CuratorWatcher watcher = new ServerWatcher();
 				client.getChildren().usingWatcher(watcher ).forPath(Constans.SERVER_PATH);
-				
+				//为ZooKeeper注册一个Watcher，监听该路径下的子节点变化
 				for(String path :serverPath){
 					String[] str = path.split("#");
 					ChannelManager.realServerPath.add(str[0]+"#"+str[1]);
