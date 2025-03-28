@@ -12,7 +12,7 @@ import LiangRuizhe.rpc.cousumer.core.NettyClient;
 import io.netty.channel.ChannelFuture;
 
 public class ServerWatcher implements CuratorWatcher {
-
+        //用于监听Zookeeper上某个路径的变化。当前路径下的子节点发生变化时，process方法会调用。
 	public void process(WatchedEvent event) throws Exception {
 		System.out.println("process------------------------");
 		CuratorFramework client = ZooKeeperFactory.getClient();
