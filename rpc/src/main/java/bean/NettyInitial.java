@@ -26,7 +26,8 @@ import io.netty.handler.codec.string.StringEncoder;
 
 @Component
 public class NettyInitial implements ApplicationListener<ContextRefreshedEvent> {
-	
+	//NettyInitial 被标注为 @Component，它是一个 Spring 管理的 Bean。并且 NettyInitial 实现了 ApplicationListener<ContextRefreshedEvent> 接口
+	//因此在 Spring 容器刷新完成后，ContextRefreshedEvent 事件会触发 onApplicationEvent 方法
 	public  void start() {		
 		NioEventLoopGroup boss = new NioEventLoopGroup();
 		NioEventLoopGroup work = new NioEventLoopGroup();
@@ -49,7 +50,7 @@ public class NettyInitial implements ApplicationListener<ContextRefreshedEvent> 
 						ch.pipeline().addLast(new StringEncoder());//字符串编码器
 					}
 				   });
-	
+	//Netty服务器启动
 			int port = 8080;
 			ChannelFuture f = serverBootstrap.bind(8080).sync();
 		
@@ -59,7 +60,7 @@ public class NettyInitial implements ApplicationListener<ContextRefreshedEvent> 
 				System.out.println(client);
 				client.create().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(Constans.SERVER_PATH+"/"+address.getHostAddress()+"#"+port+"#");
 				System.out.println("成功");
-
+          //与 ZooKeeper 的交互，将服务器的地址（IP 和端口）注册到 ZooKeeper 上
 			}
 		
 			f.channel().closeFuture().sync();
@@ -76,7 +77,8 @@ public class NettyInitial implements ApplicationListener<ContextRefreshedEvent> 
 	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
-		this.start();		
+		this.start();
+		//触发onApplicationEvent,调用start方法。
 	}
 	
 	
